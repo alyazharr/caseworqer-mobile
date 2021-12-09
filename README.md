@@ -1,7 +1,6 @@
 # CASEWORQER
 ## PBP-D01
 
----
 ### Nama Anggota :
 - Gibran Rasyadan Jayandaru - 2006464070
 - Muhammad Farrel Sava Archini - 2006483025
@@ -101,18 +100,18 @@ CaseWorqer hadir menjadi aplikasi terpercaya bagi masyarakat untuk membantu pada
 ---
 #### Persona : 
 **1. Admin**
-    - Mengelola berita resmi dan informasi trending pada Page Tips dan Trik diterima lamaran
+- Mengelola berita resmi dan informasi trending pada Page Tips dan Trik diterima lamaran
 
 **2. Pelamar**
-    - Melihat serta menganalisa kasus covid yang terjadi tergantung dari calon dimana pelamar akan bekerja nantinya
-    - Mempelajari tata cara protokol kesehatan sehingga akan melindungi pelamar yang nantinya akan bekerja
-    - Melihat lowongan-lowongan pekerjaan yang ada sehingga dapat disesuaikan dengan skill serta kebutuhan pelamar
-    - Melamar sebuah pekerjaan  
-    - Mempelajari bagaimana lamaran yang diajukan dapat diterima oleh pemberi lamaran
-    - Berinteraksi dengan sesama pelamar yang lainnya sehingga dapat bertukar ide, pengalaman, dll
+- Melihat serta menganalisa kasus covid yang terjadi tergantung dari calon dimana pelamar akan bekerja nantinya
+- Mempelajari tata cara protokol kesehatan sehingga akan melindungi pelamar yang nantinya akan bekerja
+- Melihat lowongan-lowongan pekerjaan yang ada sehingga dapat disesuaikan dengan skill serta kebutuhan pelamar
+- Melamar sebuah pekerjaan  
+- Mempelajari bagaimana lamaran yang diajukan dapat diterima oleh pemberi lamaran
+- Berinteraksi dengan sesama pelamar yang lainnya sehingga dapat bertukar ide, pengalaman, dll
 
 **3. Pemberi Lamaran**
-    - Membuka lowongan pekerjaan sehingga para pelamar dapat melamar pekerjaan
-    - Melihat serta menganalisa kasus covid yang terjadi sehingga pemberi lamaran dapat mengetahui tingkat kasus yang terjadi di daerah pelamar-pelamarnya berada
-    - Sama seperti pelamar dapat mempelajari tata cara protokol kesehatan sehingga keduanya dapat terlindungi dengan baik
-    - Memisahkan antara lowongan pekerjaan yang akan dilaksanakan _WFH/WFO/Mixed_ sehingga pelamar dapat memilih lowongan yang sesuai
+- Membuka lowongan pekerjaan sehingga para pelamar dapat melamar pekerjaan
+- Melihat serta menganalisa kasus covid yang terjadi sehingga pemberi lamaran dapat mengetahui tingkat kasus yang terjadi di daerah pelamar-pelamarnya berada
+- Sama seperti pelamar dapat mempelajari tata cara protokol kesehatan sehingga keduanya dapat terlindungi dengan baik
+- Memisahkan antara lowongan pekerjaan yang akan dilaksanakan _WFH/WFO/Mixed_ sehingga pelamar dapat memilih lowongan yang sesuai
