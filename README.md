@@ -22,80 +22,83 @@ CaseWorqer hadir menjadi aplikasi terpercaya bagi masyarakat untuk membantu pada
 
 ---
 ### Daftar Modul Aplikasi Mobile & Penjelasan Integrasi Web Service
-**1. Home Page(Semua Orang)**
-    - About website
-    - Data kasus covid-19 (https://kawalcorona.com/api/)
-    - Section Tips dan Trik Protokol kesehatan
+**1. Home Page(Semua Orang)**  
+- About website
+- Data kasus covid-19 (https://kawalcorona.com/api/)
+- Section Tips dan Trik Protokol kesehatan
 
-**2. Modul untuk User**
-	Hal yang akan diimplementasikan :       
-    - Memasukkan data user in general
-    - Lowongan pekerjaan yang dilamar
-    - Data yang akan diambil adalah data-data pribadi user.
-    
-    Data dari form akan diubah dalam bentuk json sehingga terhubung dengan database django. Data json akan digunakan sebagai perantara antar flutter _(mobile app)_ dengan halaman web.
+**2. Modul untuk User**  
+Hal yang akan diimplementasikan :       
+- Memasukkan data user in general
+- Lowongan pekerjaan yang dilamar
+- Data yang akan diambil adalah data-data pribadi user.  
+  
+Data dari form akan diubah dalam bentuk json sehingga terhubung dengan database django. Data json akan digunakan sebagai perantara antar flutter _(mobile app)_ dengan halaman web.
 
-**3. Modul untuk pelamar kerja**
-    Modul ini akan menampilkan lowongan pekerjaan yang tersedia. Lowongan pekerjaan yang tersedia pada halaman web akan diambil datanya berupa _.json_.
-    Setelah ditampilkan lowongan kerja, para pelamar bisa melamar kerja dalam bentuk form (Semua pelamar yang akan bekerja pada pekerjaan WFO harus menyertakan sertifikat vaksin.). Isian pada form akan dikirim datanya dalam bentuk json ke database django web.
+**3. Modul untuk pelamar kerja**  
+Modul ini akan menampilkan lowongan pekerjaan yang tersedia. Lowongan pekerjaan yang tersedia pada halaman web akan diambil datanya berupa _.json_.  
+  
+Setelah ditampilkan lowongan kerja, para pelamar bisa melamar kerja dalam bentuk form (Semua pelamar yang akan bekerja pada pekerjaan WFO harus menyertakan sertifikat vaksin.). Isian pada form akan dikirim datanya dalam bentuk json ke database django web.
 
-**4. Halaman pembuka lowongan kerja**
-    - Membuka lowongan dalam bentuk form 
-    - Dibedakan antara _WFH/WFO/Mixed_
-    
-    Para pembuka lowongan kerja dapat membuka lowongan pekerjaan dalam bentuk form. Data dari hasil form membuka lowongan pekerjaan nantinya akan digunakan pada bagian pelamar kerja untuk mencari lowongan dan melamar suatu pekerjaan, kemudian data perusahaan juga akan digunakan pada bagian company review sehingga nantinya dapat di review oleh pelamar.
-    
-    Hal yang perlu diimplementasikan:
-    - Data perusahaan seperti nama pekerjaan, nama perusahaan, lokasi tempat perusahaan tersebut berada, tipe pekerjaan(WFH/WFO/Gabungan) serta tentang pekerjaan tersebut.
-    
-    Data dari form ini akan diubah menjadi json untuk menghubungkan pada database django.
+**4. Halaman pembuka lowongan kerja**  
+- Membuka lowongan dalam bentuk form 
+- Dibedakan antara _WFH/WFO/Mixed_  
+  
+Para pembuka lowongan kerja dapat membuka lowongan pekerjaan dalam bentuk form. Data dari hasil form membuka lowongan pekerjaan nantinya akan digunakan pada bagian pelamar kerja untuk mencari lowongan dan melamar suatu pekerjaan, kemudian data perusahaan juga akan digunakan pada bagian company review sehingga nantinya dapat di review oleh pelamar.  
+  
+Hal yang perlu diimplementasikan:  
+- Data perusahaan seperti nama pekerjaan, nama perusahaan, lokasi tempat perusahaan tersebut berada, tipe pekerjaan(WFH/WFO/Gabungan) serta tentang pekerjaan tersebut.  
+  
+Data dari form ini akan diubah menjadi json untuk menghubungkan pada database django.
 
-**5. Halaman untuk profil perusahaan**
-    Halaman profil perusahaan berfungsi untuk melihat detail perusahaan yang didaftarkan oleh user, lowongan-lowongan yang dibuka, dan para pelamar dari masing-masing lowongan.
-    
-    Hal yang perlu diimplementasikan:
-    - Form untuk memasukkan data diri umum perusahaan.
-    - Tampilan mengenai detail perusahaan, lowongan-lowongan dari perusahaan tersebut, serta siapa yang sudah melamar pada lowongan tersebut.
-        
-    Data yang diambil adalah data dari model ProfilPerusahaan dan model Pelamar. Transfer data dilakukan dari database django ke aplikasi dan sebaliknya. Transfer data dilakukan melalui konversi data ke bentuk json.
+**5. Halaman untuk profil perusahaan**  
+Halaman profil perusahaan berfungsi untuk melihat detail perusahaan yang didaftarkan oleh user, lowongan-lowongan yang dibuka, dan para pelamar dari masing-masing lowongan.  
+  
+Hal yang perlu diimplementasikan:  
+- Form untuk memasukkan data diri umum perusahaan.  
+- Tampilan mengenai detail perusahaan, lowongan-lowongan dari perusahaan tersebut, serta siapa yang sudah melamar pada lowongan tersebut.  
+  
+Data yang diambil adalah data dari model ProfilPerusahaan dan model Pelamar. Transfer data dilakukan dari database django ke aplikasi dan sebaliknya. Transfer data dilakukan melalui konversi data ke bentuk json.
 
-**6. Halaman untuk Company Job Review**
-    - Menampilkan review dari job perusahaan tertentu
-    - Memberikan review kepada job perusahaan
-    - Mencari job perusahaan untuk direview
-	
-    Hal yang perlu diimplementasikan:
-    - Form rating
-    - Form komentar
-    - Tampilan utama kumpulan job perusahaan
-    - Fitur search job
-	
-    Data yang diambil adalah:
-    - Value rating dan komentar
-    - Data job perusahaan dari lowongan kerja
+**6. Halaman untuk Company Job Review**  
+- Menampilkan review dari job perusahaan tertentu  
+- Memberikan review kepada job perusahaan
+- Mencari job perusahaan untuk direview  
+  
+Hal yang perlu diimplementasikan:
+- Form rating
+- Form komentar
+- Tampilan utama kumpulan job perusahaan
+- Fitur search job  
+  
+Data yang diambil adalah:
+- Value rating dan komentar
+- Data job perusahaan dari lowongan kerja  
+  
+Data diambil dengan mengubah data form pada website menjadi json untuk digunakan ke dalam mobile apps. Begitu juga sebaliknya, data dari form pada mobile apps akan dikirim dalam bentuk json juga ke django web,
 
-    Data diambil dengan mengubah data form pada website menjadi json untuk digunakan ke dalam mobile apps. Begitu juga sebaliknya, data dari form pada mobile apps akan dikirim dalam bentuk json juga ke django web,
+**7.Tips dan trik diterima lamaran**  
 
-**7.Tips dan trik diterima lamaran**
-    Tips and trik merupakan halaman web bagi user untuk membaca artikel-artikel yang berkaitan dengan dunia kerja.
+Tips and trik merupakan halaman web bagi user untuk membaca artikel-artikel yang berkaitan dengan dunia kerja.  
+  
+Hal yang perlu diimplementasikan: 
+- Berita 
+- Form untuk mencari berita atau trending yang diinginkan (search bar)
+- Form untuk admin yang dapat mengimplementasikan CRUD  
+  
+Data yang akan diambil adalah  judul artikel, artikel ,url gambar, dan ringkasan artikel.  
+  
+Data dari form akan dibuat dalam bentuk json, data json ini akan digunakan sebagai perantara dari website django ke flutter atau flutter ke django. 
 
-    Hal yang perlu diimplementasikan: 
-    - Berita 
-    - Form untuk mencari berita atau trending yang diinginkan (search bar)
-    - Form untuk admin yang dapat mengimplementasikan CRUD
-
-    Data yang akan diambil adalah  judul artikel, artikel ,url gambar, dan ringkasan artikel.
-    Data dari form akan dibuat dalam bentuk json, data json ini akan digunakan sebagai perantara dari website django ke flutter atau flutter ke django. 
-
-**8. Forum**
-    Forum merupakan sebuah halaman pagi para pengguna untuk saling berinteraksi dan berbagi pengalaman di dunia kerja. Pengguna bisa memposting forum baru dan memberikan reply atau balasan pada suatu forum. 
-
-    Hal yang perlu diimplementasikan :
-    - Form untuk memulai postingan baru (berisi judul dan isi form)
-    - Form untuk fitur reply tiap postingan
-    - Toggle button dan alert
-	
-    Data postingan pengguna dan reply pada tiap objek postingan akan diambil dari website dengan framework django yang telah dibuat sebelumnya dalam bentuk json. Data json sebagai media pengiriman data dari django ke flutter dan sebaliknya.
+**8. Forum**  
+Forum merupakan sebuah halaman pagi para pengguna untuk saling berinteraksi dan berbagi pengalaman di dunia kerja. Pengguna bisa memposting forum baru dan memberikan reply atau balasan pada suatu forum.   
+  
+Hal yang perlu diimplementasikan :
+- Form untuk memulai postingan baru (berisi judul dan isi form)
+- Form untuk fitur reply tiap postingan
+- Toggle button dan alert  
+  
+Data postingan pengguna dan reply pada tiap objek postingan akan diambil dari website dengan framework django yang telah dibuat sebelumnya dalam bentuk json. Data json sebagai media pengiriman data dari django ke flutter dan sebaliknya.
 
 ---
 #### Persona : 
