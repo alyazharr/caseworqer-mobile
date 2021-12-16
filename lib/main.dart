@@ -15,6 +15,7 @@ import 'package:caseworqer/companyReview.dart';
 import 'package:caseworqer/user.dart';
 import 'package:caseworqer/profilPerusahaan.dart';
 import 'package:caseworqer/lowonganKerja.dart';
+// import 'package:caseworqer/form.dart';
 
 void main() => runApp(const MyApp());
 
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: _title,
       theme: ThemeData(
         // Define the default font family.

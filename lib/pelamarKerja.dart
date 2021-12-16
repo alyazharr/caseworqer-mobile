@@ -89,7 +89,8 @@ class _pelamarKerja extends State<pelamarKerja> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => LamarForm()),
+              MaterialPageRoute(
+                  builder: (context) => LamarForm(_job[index].pk)),
             );
           },
         );
@@ -114,6 +115,9 @@ class Job {
 }
 
 class LamarForm extends StatefulWidget {
+  int id;
+
+  LamarForm(this.id);
   @override
   _LamarFormState createState() => _LamarFormState();
 }
@@ -123,10 +127,19 @@ enum jenisKelamin { Pria, Wanita }
 class _LamarFormState extends State<LamarForm> {
   final _formKey = GlobalKey<FormState>();
 
+  String nama;
+  int usia;
+  String pendidikan;
+  String alamat;
+  String email;
+  String jenisKelaminForm;
+  String sertifikatVaksin;
+  int idLowongan;
+
   double nilaiSlider = 1;
   bool nilaiCheckBox = false;
   bool nilaiSwitch = true;
-  jenisKelamin _character = jenisKelamin.Pria;
+  jenisKelamin _character;
   static const TextStyle judulStyle =
       TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
   @override
@@ -154,8 +167,11 @@ class _LamarFormState extends State<LamarForm> {
                           borderRadius: new BorderRadius.circular(5.0)),
                     ),
                     validator: (value) {
-                      if (value == null) {
+                      print(value);
+                      if (value.isEmpty) {
                         return 'Nama tidak boleh kosong';
+                      } else {
+                        nama = value;
                       }
                       return null;
                     },
@@ -164,7 +180,6 @@ class _LamarFormState extends State<LamarForm> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    obscureText: true,
                     decoration: new InputDecoration(
                       labelText: "Usia",
                       icon: Icon(Icons.calendar_today),
@@ -172,8 +187,11 @@ class _LamarFormState extends State<LamarForm> {
                           borderRadius: new BorderRadius.circular(5.0)),
                     ),
                     validator: (value) {
-                      if (value == null) {
+                      print(value);
+                      if (value.isEmpty) {
                         return 'Usia tidak boleh kosong';
+                      } else {
+                        usia = int.parse(value);
                       }
                       return null;
                     },
@@ -182,7 +200,6 @@ class _LamarFormState extends State<LamarForm> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    obscureText: true,
                     decoration: new InputDecoration(
                       labelText: "Pendidikan",
                       icon: Icon(Icons.school),
@@ -190,8 +207,11 @@ class _LamarFormState extends State<LamarForm> {
                           borderRadius: new BorderRadius.circular(5.0)),
                     ),
                     validator: (value) {
-                      if (value == null) {
+                      print(value);
+                      if (value.isEmpty) {
                         return 'Pendidikan tidak boleh kosong';
+                      } else {
+                        pendidikan = value;
                       }
                       return null;
                     },
@@ -200,7 +220,6 @@ class _LamarFormState extends State<LamarForm> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    obscureText: true,
                     decoration: new InputDecoration(
                       labelText: "Alamat",
                       icon: Icon(Icons.home),
@@ -208,8 +227,11 @@ class _LamarFormState extends State<LamarForm> {
                           borderRadius: new BorderRadius.circular(5.0)),
                     ),
                     validator: (value) {
-                      if (value == null) {
+                      print(value);
+                      if (value.isEmpty) {
                         return 'Alamat tidak boleh kosong';
+                      } else {
+                        alamat = value;
                       }
                       return null;
                     },
@@ -218,7 +240,6 @@ class _LamarFormState extends State<LamarForm> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    obscureText: true,
                     decoration: new InputDecoration(
                       labelText: "Email",
                       icon: Icon(Icons.mail),
@@ -226,8 +247,11 @@ class _LamarFormState extends State<LamarForm> {
                           borderRadius: new BorderRadius.circular(5.0)),
                     ),
                     validator: (value) {
-                      if (value == null) {
+                      print(value);
+                      if (value.isEmpty) {
                         return 'Email tidak boleh kosong';
+                      } else {
+                        email = value;
                       }
                       return null;
                     },
@@ -244,6 +268,8 @@ class _LamarFormState extends State<LamarForm> {
                         onChanged: (jenisKelamin value) {
                           setState(() {
                             _character = value;
+                            jenisKelaminForm = "Pria";
+                            print("JK");
                           });
                         },
                       ),
@@ -256,6 +282,7 @@ class _LamarFormState extends State<LamarForm> {
                         onChanged: (jenisKelamin value) {
                           setState(() {
                             _character = value;
+                            jenisKelaminForm = "Wanita";
                           });
                         },
                       ),
@@ -265,13 +292,17 @@ class _LamarFormState extends State<LamarForm> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    obscureText: true,
                     decoration: new InputDecoration(
                       labelText: "Link Sertifikat Vaksin",
                       icon: Icon(Icons.link),
                       border: OutlineInputBorder(
                           borderRadius: new BorderRadius.circular(5.0)),
                     ),
+                    validator: (value) {
+                      print(value);
+                      sertifikatVaksin = value;
+                      return null;
+                    },
                   ),
                 ),
                 RaisedButton(
@@ -280,8 +311,72 @@ class _LamarFormState extends State<LamarForm> {
                     style: TextStyle(color: Colors.white),
                   ),
                   color: Colors.blue,
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {}
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      idLowongan = widget.id;
+                      print("Tervalidasi");
+                      print(nama);
+                      print(usia);
+                      print(pendidikan);
+                      print(alamat);
+                      print(email);
+                      print(jenisKelaminForm);
+                      print(sertifikatVaksin);
+                      print(idLowongan);
+                      print("end");
+
+                      // Map<String, dynamic> toJson() => {
+                      //       'nama': nama,
+                      //       'usia': usia,
+                      //       'pendidikan': pendidikan,
+                      //       'alamat': alamat,
+                      //       'email': email,
+                      //       'jenisKelamin': jenisKelaminForm,
+                      //       'sertifikatVaksin': sertifikatVaksin,
+                      //       'idLowongan': idLowongan
+                      //     };
+                      print(jsonEncode(<String, dynamic>{
+                        'nama': nama,
+                        'usia': usia,
+                        'pendidikan': pendidikan,
+                        'alamat': alamat,
+                        'email': email,
+                        'jenisKelamin': jenisKelaminForm,
+                        'sertifikatVaksin': sertifikatVaksin,
+                        'idLowongan': idLowongan
+                      }));
+                      final response = await http.post(
+                        Uri.parse(
+                            'https://caseworqer.herokuapp.com/pelamarkerja/lamar'),
+                        headers: <String, String>{
+                          'Content-Type': 'application/json; charset=UTF-8',
+                        },
+                        body: jsonEncode(<String, dynamic>{
+                          'nama': nama,
+                          'usia': usia,
+                          'pendidikan': pendidikan,
+                          'alamat': alamat,
+                          'email': email,
+                          'jenisKelamin': jenisKelaminForm,
+                          'sertifikatVaksin': sertifikatVaksin,
+                          'idLowongan': idLowongan
+                        }),
+                      );
+                      print(response.statusCode);
+                      if (response.statusCode == 201 ||
+                          response.statusCode == 200) {
+                        // If the server did return a 201 CREATED response,
+                        // then parse the JSON.
+                        print(response.statusCode);
+                        Navigator.pop(context);
+                      } else {
+                        // If the server did not return a 201 CREATED response,
+                        // then throw an exception.
+                        throw Exception('Failed to send data.');
+                      }
+                    } else {
+                      print("tidak tervalidasi");
+                    }
                   },
                 ),
               ],
