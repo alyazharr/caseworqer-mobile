@@ -13,7 +13,11 @@
 //   }
 // }
 
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:http/http.dart' as http;
 
 class forum extends StatefulWidget {
   const forum({Key? key}) : super(key: key);
@@ -23,6 +27,37 @@ class forum extends StatefulWidget {
 
 class _forum extends State<forum> {
   final _formKey = GlobalKey<FormState>();
+
+  // List<> _job = List<Job>();
+  List<PostForum> _listForum = <PostForum>[];
+
+  Future<List<PostForum>> getPostForum() async {
+    var url = 'http://caseworqer.herokuapp.com/forum/json-forum';
+    var response = await http.get(url);
+    print(response);
+    // ignore: deprecated_member_use
+    var listForum = <PostForum>[];
+    if (response.statusCode == 200) {
+      print("200");
+      var postForumsJson = json.decode(response.body);
+      print(postForumsJson);
+      for (var postForumJson in postForumsJson) {
+        print(PostForum.fromJson(postForumJson));
+        listForum.add(PostForum.fromJson(postForumJson));
+      }
+    }
+    return listForum;
+  }
+
+  @override
+  void initState() {
+    getPostForum().then((value) {
+      setState(() {
+        _listForum.addAll(value);
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,54 +70,150 @@ class _forum extends State<forum> {
             style: TextStyle(fontFamily: 'Sansita One')),
         centerTitle: true,
       ),
-      body: Center(
-        child: Container(
-          width: 300,
-          height: 700,
-          child: Column(
-            children: <Widget>[
-              Text('\n'),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Container(width: 125, height: 40, child: AddForumButton()),
-                ],
-              ),
-            ],
-          ),
-        ),
+      body: Container(
+        child: ListView.builder(
+            itemCount: _listForum.length,
+            itemBuilder: (context, index) {
+              return ListBody(children: <Widget>[
+                Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(18),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Container(
+                        //     width: 105, height: 40, child: AddForumButton()),
+                        Row(
+                          children: <Widget>[
+                            Column(children: <Widget>[
+                              Image(
+                                image: AssetImage(
+                                    'assets/images/profil_forum.jpg'),
+                                width: 35,
+                                height: 35,
+                              ),
+                            ]),
+                            Text('    '),
+                            Flexible(
+                              child: Text(
+                                _listForum[index].fields["title"],
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: primaryBlack,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                        Row(
+                          children: <Widget>[
+                            const SizedBox(
+                              width: 48,
+                            ),
+                            Text(
+                              'by : ',
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                            Text(
+                              '@',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              _listForum[index].fields["userPost"],
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              ' – ',
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  _listForum[index]
+                                      .fields["postTime"]
+                                      .substring(0, 10),
+                                  style: TextStyle(
+                                      fontSize: 10, color: Colors.grey),
+                                ),
+                                Text('  '),
+                                Text(
+                                  _listForum[index]
+                                      .fields["postTime"]
+                                      .substring(11, 19),
+                                  style: TextStyle(
+                                      fontSize: 10, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Text(''),
+                        Text(
+                          _listForum[index].fields["message"],
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: primaryBlack,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
+                ),
+                Text(' ', style: TextStyle(fontSize: 6))
+              ]);
+            }),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: Color(0xFF689775),
+        foregroundColor: white,
+        onPressed: () {
+          Navigator.pushNamed(context, add_forum.addRoute);
+          ;
+        },
       ),
     );
   }
 }
 
-class AddForumButton extends StatelessWidget {
-  const AddForumButton({Key? key}) : super(key: key);
+class PostForum {
+  String model = "";
+  int pk = 0;
+  Map<String, dynamic> fields = {};
 
-  @override
-  Widget build(BuildContext context) {
-    // The GestureDetector wraps the button.
-    return GestureDetector(
-      // When the child is tapped, show a snackbar.
-      onTap: () {
-        Navigator.pushNamed(context, add_forum.addRoute);
-      },
-      // The custom button
-      child: Container(
-        padding: const EdgeInsets.all(12.0),
-        decoration: BoxDecoration(
-          color: Color(0xFF689775),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: const Text('Add Forum',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: white,
-                fontSize: 15,
-                fontFamily: "Sansita One",
-                fontWeight: FontWeight.bold)),
-      ),
-    );
+  PostForum(this.model, this.pk, this.fields);
+
+  PostForum.fromJson(Map<String, dynamic> json) {
+    model = json['model'];
+    pk = json['pk'];
+    fields = json['fields'];
+  }
+}
+
+class PostComment {
+  String model = "";
+  int pk = 0;
+  Map<String, dynamic> fields = {};
+
+  PostComment(this.model, this.pk, this.fields);
+
+  PostComment.fromJson(Map<String, dynamic> json) {
+    model = json['model'];
+    pk = json['pk'];
+    fields = json['fields'];
   }
 }
 
@@ -128,6 +259,7 @@ class AddForumPage extends State<add_forum> {
   TextEditingController title_controller = new TextEditingController();
   TextEditingController message_controller = new TextEditingController();
   String pasteValue = "";
+  final _formKey = GlobalKey<FormState>();
 
   void clearAddForum() {
     title_controller.clear();
@@ -144,72 +276,95 @@ class AddForumPage extends State<add_forum> {
             style: TextStyle(fontFamily: 'Sansita One')),
         centerTitle: true,
       ),
-      body: Center(
-        child: Container(
-            width: 500,
-            height: 700,
-            child: Column(
-              children: <Widget>[
-                Text('\n'),
-                Row(
+      body: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Container(
+                width: 500,
+                height: 900,
+                child: Column(
                   children: <Widget>[
-                    Text('     '),
-                    Container(width: 155, height: 40, child: BackButton()),
-                  ],
-                ),
-                Text('\n'),
-                Container(
-                  width: 300,
-                  height: 100,
-                  child: TextField(
-                    controller: title_controller,
-                    // onChanged: (text) {
-                    //   print("Title : $text");
-                    // },
-                    decoration: InputDecoration(
-                      fillColor: Colors.black12,
-                      filled: true,
-                      hintText: 'What\' Your Forum Title ?',
-                      labelText: 'Post Title',
-                      labelStyle: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold),
+                    Text('\n'),
+                    Row(
+                      children: <Widget>[
+                        Text('     '),
+                        Container(width: 155, height: 40, child: BackButton()),
+                      ],
                     ),
-                    maxLines: 2,
-                  ),
-                ),
-                Container(
-                  width: 300,
-                  height: 100,
-                  child: TextField(
-                    controller: message_controller,
-                    // onChanged: (text) {
-                    //   print("Message : $text");
-                    // },
-                    decoration: InputDecoration(
-                        fillColor: Colors.black12,
-                        filled: true,
-                        hintText: 'Write Your Form Here ... ',
-                        labelText: 'Post Message',
-                        labelStyle: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold)),
-                    maxLines: 12,
-                  ),
-                ),
-                Text('\n'),
-                Text('\n'),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
+                    Text('\n'),
+                    Container(
+                      width: 300,
+                      height: 100,
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your forum\'s title';
+                          }
+                          return null;
+                        },
+                        controller: title_controller,
+                        // onChanged: (text) {
+                        //   print("Title : $text");
+                        // },
+                        decoration: InputDecoration(
+                          fillColor: Colors.black12,
+                          filled: true,
+                          hintText: 'What\' Your Forum Title ?',
+                          labelText: 'Post Title',
+                          labelStyle: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        maxLines: 20,
+                      ),
+                    ),
+                    Text('\n'),
+                    Container(
+                      width: 300,
+                      height: 300,
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your forum\'s message';
+                          }
+                          return null;
+                        },
+                        controller: message_controller,
+                        // onChanged: (text) {
+                        //   print("Message : $text");
+                        // },
+                        decoration: InputDecoration(
+                            fillColor: Colors.black12,
+                            filled: true,
+                            hintText: 'Write Your Form Here ... ',
+                            labelText: 'Post Message',
+                            labelStyle: TextStyle(
+                                fontSize: 15,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold)),
+                        maxLines: 12,
+                      ),
+                    ),
+                    Text('\n'),
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: <
+                        Widget>[
                       Container(
                         width: 123,
                         height: 40,
                         child: RaisedButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              if (_formKey.currentState!.validate()) {
+                                // If the form is valid, display a snackbar. In the real world,
+                                // you'd often call a server or save the information in a database.
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Post Your Forum')),
+                                );
+                              }
+                              ;
+                              // Navigator.pop(context);
                             },
                             color: Color(0xFF34ae57),
                             child: Text('Post to Forum',
@@ -221,9 +376,9 @@ class AddForumPage extends State<add_forum> {
                       Container(width: 75, height: 40, child: ResetButton()),
                       Text('       '),
                     ])
-              ],
-            )),
-      ),
+                  ],
+                )),
+          )),
     );
   }
 }
@@ -342,3 +497,15 @@ const MaterialColor white = const MaterialColor(
     900: const Color(0xFFFFFFFF),
   },
 );
+
+class boxPost extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // The GestureDetector wraps the button.
+    return SizedBox(
+      width: 200.0,
+      height: 300.0,
+      child: Card(child: Text('Hello World!')),
+    );
+  }
+}
