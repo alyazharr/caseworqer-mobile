@@ -27,32 +27,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var add_routes = <String, WidgetBuilder>{
-      add_forum.addRoute: (BuildContext context) =>
-          new add_forum(title: "AddForum"),
-    };
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: _title,
-        theme: ThemeData(
-          // Define the default font family.
-          fontFamily: 'Rubik',
-          appBarTheme: AppBarTheme(
-            backgroundColor: Colors.lightGreen.shade200,
-            foregroundColor: Colors.deepOrange.shade900,
-          ),
-
-          // Define the default `TextTheme`. Use this to specify the default
-          // text styling for headlines, titles, bodies of text, and more.
-          textTheme: TextTheme(
-              headline6:
-                  TextStyle(fontSize: 20.0, color: Colors.deepOrange.shade900)),
+      debugShowCheckedModeBanner: false,
+      title: _title,
+      theme: ThemeData(
+        // Define the default font family.
+        fontFamily: 'Rubik',
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.lightGreen.shade200,
+          foregroundColor: Colors.deepOrange.shade900,
         ),
-        home: MyStatefulWidget(),
-        routes: {
-          '/AddForum': (BuildContext context) =>
-              new add_forum(title: "AddForum"),
-        });
+
+        // Define the default `TextTheme`. Use this to specify the default
+        // text styling for headlines, titles, bodies of text, and more.
+        textTheme: TextTheme(
+            headline6:
+                TextStyle(fontSize: 20.0, color: Colors.deepOrange.shade900)),
+      ),
+      home: MyStatefulWidget(),
+    );
   }
 }
 

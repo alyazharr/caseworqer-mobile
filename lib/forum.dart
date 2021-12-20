@@ -20,7 +20,6 @@ import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 
 class forum extends StatefulWidget {
-  const forum({Key? key}) : super(key: key);
   @override
   _forum createState() => _forum();
 }
@@ -39,11 +38,11 @@ class _forum extends State<forum> {
     var listForum = <PostForum>[];
     if (response.statusCode == 200) {
       print("200");
-      var postForumsJson = json.decode(response.body);
-      print(postForumsJson);
-      for (var postForumJson in postForumsJson) {
-        print(PostForum.fromJson(postForumJson));
-        listForum.add(PostForum.fromJson(postForumJson));
+      var PostJson = json.decode(response.body);
+      print(PostJson);
+      for (var PostJson in PostJson) {
+        print(PostForum.fromJson(PostJson));
+        listForum.add(PostForum.fromJson(PostJson));
       }
     }
     return listForum;
@@ -81,8 +80,6 @@ class _forum extends State<forum> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Container(
-                        //     width: 105, height: 40, child: AddForumButton()),
                         Row(
                           children: <Widget>[
                             Column(children: <Widget>[
@@ -181,7 +178,10 @@ class _forum extends State<forum> {
         backgroundColor: Color(0xFF689775),
         foregroundColor: white,
         onPressed: () {
-          Navigator.pushNamed(context, add_forum.addRoute);
+          // Navigator.pushNamed(context, add_forum.addRoute);
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return add_forum(0);
+          }));
           ;
         },
       ),
@@ -218,8 +218,6 @@ class PostComment {
 }
 
 class BackButton extends StatelessWidget {
-  const BackButton({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     // The GestureDetector wraps the button.
@@ -248,9 +246,9 @@ class BackButton extends StatelessWidget {
 }
 
 class add_forum extends StatefulWidget {
-  const add_forum({Key? key, required this.title}) : super(key: key);
-  static const String addRoute = "/AddForum";
-  final String title;
+  int id;
+  add_forum(this.id);
+
   @override
   AddForumPage createState() => AddForumPage();
 }
@@ -258,8 +256,11 @@ class add_forum extends StatefulWidget {
 class AddForumPage extends State<add_forum> {
   TextEditingController title_controller = new TextEditingController();
   TextEditingController message_controller = new TextEditingController();
-  String pasteValue = "";
   final _formKey = GlobalKey<FormState>();
+
+  late String titleForum;
+  late String Message;
+  late int id_forum;
 
   void clearAddForum() {
     title_controller.clear();
@@ -299,13 +300,12 @@ class AddForumPage extends State<add_forum> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your forum\'s title';
+                          } else {
+                            titleForum = value;
                           }
                           return null;
                         },
                         controller: title_controller,
-                        // onChanged: (text) {
-                        //   print("Title : $text");
-                        // },
                         decoration: InputDecoration(
                           fillColor: Colors.black12,
                           filled: true,
@@ -327,13 +327,12 @@ class AddForumPage extends State<add_forum> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your forum\'s message';
+                          } else {
+                            Message = value;
                           }
                           return null;
                         },
                         controller: message_controller,
-                        // onChanged: (text) {
-                        //   print("Message : $text");
-                        // },
                         decoration: InputDecoration(
                             fillColor: Colors.black12,
                             filled: true,
@@ -353,18 +352,43 @@ class AddForumPage extends State<add_forum> {
                         width: 123,
                         height: 40,
                         child: RaisedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                // If the form is valid, display a snackbar. In the real world,
-                                // you'd often call a server or save the information in a database.
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Post Your Forum')),
-                                );
+                                id_forum = widget.id;
+                                print("Forum tervalidasi");
+                                print("Title Forum : ");
+                                print(titleForum);
+                                print("Message Forum : ");
+                                print(Message);
+                                print("end");
+
+                                Map<String, dynamic> toJson() => {
+                                      'title': titleForum,
+                                      'message': Message,
+                                    };
+                                print(jsonEncode(toJson));
+
+                                final response = await http.post(
+                                    Uri.parse(
+                                        'http://caseworqer.herokuapp.com/forum/add'),
+                                    headers: <String, String>{
+                                      'Content-Type':
+                                          'application/json; charset=UTF-8',
+                                    },
+                                    body: jsonEncode(toJson()));
+                                print(response.statusCode);
+                                if (response.statusCode == 201 ||
+                                    response.statusCode == 200) {
+                                  print(response.statusCode);
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Post Your Forum')),
+                                  );
+                                } else {
+                                  throw Exception('Failed to create new post.');
+                                }
                               }
-                              ;
-                              // Navigator.pop(context);
                             },
                             color: Color(0xFF34ae57),
                             child: Text('Post to Forum',
@@ -384,7 +408,6 @@ class AddForumPage extends State<add_forum> {
 }
 
 class CancelButton extends StatelessWidget {
-  const CancelButton({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -426,7 +449,6 @@ class CancelButton extends StatelessWidget {
 }
 
 class ResetButton extends StatelessWidget {
-  ResetButton({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -497,15 +519,3 @@ const MaterialColor white = const MaterialColor(
     900: const Color(0xFFFFFFFF),
   },
 );
-
-class boxPost extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // The GestureDetector wraps the button.
-    return SizedBox(
-      width: 200.0,
-      height: 300.0,
-      child: Card(child: Text('Hello World!')),
-    );
-  }
-}
