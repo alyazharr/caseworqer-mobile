@@ -31,7 +31,7 @@ class _forum extends State<forum> {
   List<PostForum> _listForum = <PostForum>[];
 
   Future<List<PostForum>> getPostForum() async {
-    var url = 'http://caseworqer.herokuapp.com/forum/json-forum';
+    var url = 'https://caseworqer.herokuapp.com/forum/json-forum';
     var response = await http.get(url);
     print(response);
     // ignore: deprecated_member_use
@@ -71,6 +71,7 @@ class _forum extends State<forum> {
       ),
       body: Container(
         child: ListView.builder(
+            reverse: true,
             itemCount: _listForum.length,
             itemBuilder: (context, index) {
               return ListBody(children: <Widget>[
@@ -261,6 +262,7 @@ class AddForumPage extends State<add_forum> {
   late String titleForum;
   late String Message;
   late int id_forum;
+  var now = DateTime.now();
 
   void clearAddForum() {
     title_controller.clear();
@@ -362,20 +364,35 @@ class AddForumPage extends State<add_forum> {
                                 print(Message);
                                 print("end");
 
-                                Map<String, dynamic> toJson() => {
-                                      'title': titleForum,
-                                      'message': Message,
-                                    };
-                                print(jsonEncode(toJson));
+                                print(jsonEncode(<String, dynamic>{
+                                  'title': titleForum,
+                                  'message': Message,
+                                  'postTime':
+                                      '${now.year}-${now.month}-${now.day}T${now.hour}:${now.minute}:${now.second}.${now.millisecondsSinceEpoch}Z',
+                                  'userPost': "Unknown",
+                                }));
+
+                                // Map<String, dynamic> toJson() => {
+                                //       'title': titleForum,
+                                //       'message': Message,
+                                //     };
+                                // print(jsonEncode(toJson));
 
                                 final response = await http.post(
-                                    Uri.parse(
-                                        'http://caseworqer.herokuapp.com/forum/add'),
-                                    headers: <String, String>{
-                                      'Content-Type':
-                                          'application/json; charset=UTF-8',
-                                    },
-                                    body: jsonEncode(toJson()));
+                                  Uri.parse(
+                                      'https://caseworqer.herokuapp.com/forum/add'),
+                                  headers: <String, String>{
+                                    'Content-Type':
+                                        'application/json; charset=UTF-8',
+                                  },
+                                  body: jsonEncode(<String, dynamic>{
+                                    'title': titleForum,
+                                    'message': Message,
+                                    'postTime':
+                                        '${now.year}-${now.month}-${now.day}T${now.hour}:${now.minute}:${now.second}.${now.millisecondsSinceEpoch}Z',
+                                    'userPost': "Unknown",
+                                  }),
+                                );
                                 print(response.statusCode);
                                 if (response.statusCode == 201 ||
                                     response.statusCode == 200) {
