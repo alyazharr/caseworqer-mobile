@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 
+// untuk forum post
 class forum extends StatefulWidget {
   @override
   _forum createState() => _forum();
@@ -11,39 +12,35 @@ class forum extends StatefulWidget {
 
 class _forum extends State<forum> {
   final _formKey = GlobalKey<FormState>();
+
+  // list simpan hasil forum dan comment dari django
   List<PostForum> _listForum = <PostForum>[];
   List<PostForum> _listComment = <PostForum>[];
 
+  // async get post forum data
   Future<List<PostForum>> getPostForum() async {
     var url = 'https://caseworqer.herokuapp.com/forum/json-forum';
     var response = await http.get(url);
-    print(response);
 
     var listForum = <PostForum>[];
     if (response.statusCode == 200) {
-      print("200");
       var PostJson = json.decode(response.body);
-      print(PostJson);
       for (var PostJson in PostJson) {
-        print(PostForum.fromJson(PostJson));
         listForum.add(PostForum.fromJson(PostJson));
       }
     }
     return listForum;
   }
 
+  // get post comment data
   Future<List<PostForum>> getPostComment() async {
     var url_com = 'https://caseworqer.herokuapp.com/forum/json-com';
     var response = await http.get(url_com);
-    print(response);
 
     var listComment = <PostForum>[];
     if (response.statusCode == 200) {
-      print("200");
       var Com_Json = json.decode(response.body);
-      print(Com_Json);
       for (var Com_Json in Com_Json) {
-        print(PostForum.fromJson(Com_Json));
         listComment.add(PostForum.fromJson(Com_Json));
       }
     }
@@ -52,11 +49,13 @@ class _forum extends State<forum> {
 
   @override
   void initState() {
+    // post forum
     getPostForum().then((value) {
       setState(() {
         _listForum.addAll(value);
       });
     });
+    // post comment
     getPostComment().then((value) {
       setState(() {
         _listComment.addAll(value);
@@ -76,6 +75,7 @@ class _forum extends State<forum> {
         centerTitle: true,
       ),
       body: Container(
+        // list view post forum
         child: ListView.builder(
             reverse: true,
             itemCount: _listForum.length,
@@ -85,110 +85,104 @@ class _forum extends State<forum> {
                     color: Color(0xFFECECEC),
                     shadowColor: Color(0xFFE9E9E9),
                     child: Padding(
-                        padding: EdgeInsets.all(18),
+                        padding: EdgeInsets.all(12),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 5),
-                              Row(
-                                children: <Widget>[
-                                  Column(children: <Widget>[
-                                    Image(
-                                      image: AssetImage(
-                                          'assets/images/profil_forum.jpg'),
-                                      width: 38,
-                                      height: 38,
+                              Row(children: <Widget>[
+                                Column(children: <Widget>[
+                                  const SizedBox(height: 20),
+                                  Image(
+                                    image: AssetImage(
+                                        'assets/images/profil_forum.jpg'),
+                                    width: 38,
+                                    height: 38,
+                                  ),
+                                ]),
+                                Column(children: <Widget>[
+                                  const SizedBox(width: 18)
+                                ]),
+                                Flexible(
+                                    child: Text(
+                                  _listForum[index].fields["title"],
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: primaryBlack,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )),
+                              ]),
+                              Column(children: <Widget>[
+                                Row(children: <Widget>[
+                                  const SizedBox(width: 57),
+                                  Text(
+                                    'by : ',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
                                     ),
-                                  ]),
-                                  Column(children: <Widget>[
-                                    const SizedBox(width: 18)
-                                  ]),
-                                  Column(children: <Widget>[
-                                    Row(children: <Widget>[
-                                      Container(
-                                        width: 230,
-                                        height: 20,
-                                        // color: Colors.red,
-                                        child: Text(
-                                          _listForum[index].fields["title"],
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            color: primaryBlack,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ]),
-                                    const SizedBox(height: 4),
-                                    Row(children: <Widget>[
+                                  ),
+                                  Text(
+                                    '@',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.blueAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    _listForum[index].fields["userPost"],
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.blueAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    ' – ',
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.grey),
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      // ambil tanggalnya (ekstrak manual)
                                       Text(
-                                        'by : ',
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      Text(
-                                        '@',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        _listForum[index].fields["userPost"],
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        ' – ',
+                                        _listForum[index]
+                                            .fields["postTime"]
+                                            .substring(0, 10),
                                         style: TextStyle(
                                             fontSize: 12, color: Colors.grey),
                                       ),
-                                      Row(
-                                        children: <Widget>[
-                                          Text(
-                                            _listForum[index]
-                                                .fields["postTime"]
-                                                .substring(0, 10),
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey),
-                                          ),
-                                          Text('  '),
-                                          Text(
-                                            _listForum[index]
-                                                .fields["postTime"]
-                                                .substring(11, 19),
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey),
-                                          ),
-                                        ],
+                                      Text('  '),
+                                      Text(
+                                        _listForum[index]
+                                            .fields["postTime"]
+                                            .substring(11, 19),
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.grey),
                                       ),
-                                    ])
-                                  ])
-                                ],
-                              ),
-                              const SizedBox(height: 18),
+                                    ],
+                                  ),
+                                ])
+                              ]),
+                              const SizedBox(height: 22),
                               Row(
                                 children: <Widget>[
-                                  Text(''),
-                                  Text(
-                                    _listForum[index].fields["message"],
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: primaryBlack,
+                                  Flexible(
+                                    child: Text(
+                                      _listForum[index].fields["message"],
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: primaryBlack,
+                                      ),
                                     ),
-                                  ),
+                                  )
                                 ],
                               ),
                               const SizedBox(height: 5),
+
+                              // reply dan read comment button
                               Row(
                                 children: <Widget>[
                                   const SizedBox(width: 20),
@@ -225,7 +219,7 @@ class _forum extends State<forum> {
                                 ],
                               ),
                             ]))),
-                const SizedBox(height: 8)
+                const SizedBox(height: 10)
               ]);
             }),
       ),
@@ -235,7 +229,7 @@ class _forum extends State<forum> {
         foregroundColor: primaryBlack,
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return add_forum(0);
+            return add_forum();
           }));
         },
       ),
@@ -243,6 +237,7 @@ class _forum extends State<forum> {
   }
 }
 
+// class jenis forum & comment
 class PostForum {
   String model = "";
   int pk = 0;
@@ -285,9 +280,9 @@ class BackButton extends StatelessWidget {
   }
 }
 
+// class untuk add forum
 class add_forum extends StatefulWidget {
-  int id;
-  add_forum(this.id);
+  add_forum();
 
   @override
   AddForumPage createState() => AddForumPage();
@@ -305,6 +300,7 @@ class AddForumPage extends State<add_forum> {
   late int id_forum;
   var now = DateTime.now();
 
+// fungsi untuk reset
   void clearAddForum() {
     user_controller.clear();
     title_controller.clear();
@@ -425,25 +421,6 @@ class AddForumPage extends State<add_forum> {
                         child: RaisedButton(
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                id_forum = widget.id;
-                                print("Forum tervalidasi");
-                                print("----------------");
-                                print("username : ");
-                                print(username);
-                                print("Title Forum : ");
-                                print(titleForum);
-                                print("Message Forum : ");
-                                print(Message);
-                                print("end");
-
-                                print(jsonEncode(<String, dynamic>{
-                                  'title': titleForum,
-                                  'message': Message,
-                                  'postTime':
-                                      '${now.year}-${now.month}-${now.day}T${now.hour}:${now.minute}:${now.second}.${now.millisecondsSinceEpoch}Z',
-                                  'userPost': username,
-                                }));
-
                                 final response = await http.post(
                                   Uri.parse(
                                       'https://caseworqer.herokuapp.com/forum/add'),
@@ -459,10 +436,8 @@ class AddForumPage extends State<add_forum> {
                                     'userPost': username,
                                   }),
                                 );
-                                print(response.statusCode);
                                 if (response.statusCode == 201 ||
                                     response.statusCode == 200) {
-                                  print(response.statusCode);
                                   Navigator.pop(context);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -531,7 +506,7 @@ class AddForumPage extends State<add_forum> {
 }
 
 class add_comment extends StatefulWidget {
-  int id_forum;
+  int id_forum; // id forum = pk nya forum
   add_comment(this.id_forum);
 
   @override
@@ -549,6 +524,7 @@ class AddCommentPage extends State<add_comment> {
   String normal_url = 'https://caseworqer.herokuapp.com/forum/';
   var now = DateTime.now();
 
+// untuk reset comment
   void clearComment() {
     com_user_controller.clear();
     com_message_controller.clear();
@@ -642,24 +618,6 @@ class AddCommentPage extends State<add_comment> {
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 id_post = widget.id_forum;
-                                print("Forum tervalidasi");
-                                print("----------------");
-                                print("username : ");
-                                print(user_com);
-                                print("Message Forum : ");
-                                print(message_com);
-                                print("end");
-                                // normal_url = normal_url + id_post.toString();
-                                // print(normal_url);
-
-                                print(jsonEncode(<String, dynamic>{
-                                  'post': id_post,
-                                  'commentText': message_com,
-                                  'commentTime':
-                                      '${now.year}-${now.month}-${now.day}T${now.hour}:${now.minute}:${now.second}.${now.millisecondsSinceEpoch}Z',
-                                  'userCom': user_com
-                                }));
-
                                 final response = await http.post(
                                   Uri.parse(
                                       'https://caseworqer.herokuapp.com/forum/' +
@@ -676,10 +634,9 @@ class AddCommentPage extends State<add_comment> {
                                     'userCom': user_com
                                   }),
                                 );
-                                print(response.statusCode);
+
                                 if (response.statusCode == 201 ||
                                     response.statusCode == 200) {
-                                  print(response.statusCode);
                                   Navigator.pop(context);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -747,8 +704,10 @@ class AddCommentPage extends State<add_comment> {
   }
 }
 
+// untuk menampilkan page reply dari sebuah post
 class read_page extends StatelessWidget {
-  int index_forum;
+  int index_forum; // index forum adalah di respon json dia index ke berapa
+  // shg untuk dapat pk harus diambil dari list forum dan komen di bawah ini
   List<PostForum> _listForum;
   List<PostForum> _listComment;
   read_page(this.index_forum, this._listForum, this._listComment);
@@ -759,7 +718,8 @@ class read_page extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Color(0xFFDA5144),
-        title: Text('Comment ...', style: TextStyle(color: white)),
+        title:
+            Text('Comment ...', style: TextStyle(color: white, fontSize: 20)),
         centerTitle: true,
       ),
       body: Container(
@@ -777,94 +737,81 @@ class read_page extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 5),
-                              Row(
-                                children: <Widget>[
-                                  Column(children: <Widget>[
-                                    Image(
-                                      image: AssetImage(
-                                          'assets/images/profil_forum.jpg'),
-                                      width: 38,
-                                      height: 38,
+                              Row(children: <Widget>[
+                                Column(children: <Widget>[
+                                  Image(
+                                    image: AssetImage(
+                                        'assets/images/profil_forum.jpg'),
+                                    width: 38,
+                                    height: 38,
+                                  ),
+                                ]),
+                                Column(children: <Widget>[
+                                  const SizedBox(width: 18)
+                                ]),
+                                Flexible(
+                                    child: Text(
+                                  _listForum[index_forum].fields["title"],
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: primaryBlack,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )),
+                              ]),
+                              Column(children: <Widget>[
+                                Row(children: <Widget>[
+                                  const SizedBox(width: 57),
+                                  Text(
+                                    'by : ',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
                                     ),
-                                  ]),
-                                  Column(children: <Widget>[
-                                    const SizedBox(width: 18)
-                                  ]),
-                                  Column(children: <Widget>[
-                                    Row(children: <Widget>[
-                                      Container(
-                                          width: 230,
-                                          height: 20,
-                                          // color: Colors.red,
-                                          child: Row(children: <Widget>[
-                                            Text('Re : '),
-                                            Text(
-                                              _listForum[index_forum]
-                                                  .fields["title"],
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                                color: primaryBlack,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ])),
-                                    ]),
-                                    const SizedBox(height: 4),
-                                    Row(children: <Widget>[
+                                  ),
+                                  Text(
+                                    '@',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.blueAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    _listComment[index].fields["userCom"],
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.blueAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    ' – ',
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.grey),
+                                  ),
+                                  Row(
+                                    children: <Widget>[
                                       Text(
-                                        'by : ',
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      Text(
-                                        '@',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        _listComment[index].fields["userCom"],
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        ' – ',
+                                        _listComment[index]
+                                            .fields["commentTime"]
+                                            .substring(0, 10),
                                         style: TextStyle(
                                             fontSize: 12, color: Colors.grey),
                                       ),
-                                      Row(
-                                        children: <Widget>[
-                                          Text(
-                                            _listComment[index]
-                                                .fields["commentTime"]
-                                                .substring(0, 10),
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey),
-                                          ),
-                                          Text('  '),
-                                          Text(
-                                            _listComment[index]
-                                                .fields["commentTime"]
-                                                .substring(11, 19),
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey),
-                                          ),
-                                        ],
+                                      Text('  '),
+                                      Text(
+                                        _listComment[index]
+                                            .fields["commentTime"]
+                                            .substring(11, 19),
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.grey),
                                       ),
-                                    ])
-                                  ])
-                                ],
-                              ),
+                                    ],
+                                  ),
+                                ])
+                              ]),
                               const SizedBox(height: 18),
                               Row(
                                 children: <Widget>[
@@ -940,6 +887,7 @@ class CancelButton extends StatelessWidget {
   }
 }
 
+// membuat warna hitam
 const MaterialColor primaryBlack = MaterialColor(
   _blackPrimaryValue,
   <int, Color>{
@@ -958,6 +906,7 @@ const MaterialColor primaryBlack = MaterialColor(
 
 const int _blackPrimaryValue = 0xFF000000;
 
+// warna putih
 const MaterialColor white = const MaterialColor(
   0xFFFFFFFF,
   const <int, Color>{
