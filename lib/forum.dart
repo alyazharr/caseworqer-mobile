@@ -1,18 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// class forum extends StatefulWidget {
-//   @override
-//   _forum createState() => _forum();
-// }
-
-// class _forum extends State<forum> {
-//   @override
-//   Widget build(BuildContext context) {
-//     // TODO: implement build
-//     return Scaffold(body: Text("FORUM"));
-//   }
-// }
-
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -26,15 +11,13 @@ class forum extends StatefulWidget {
 
 class _forum extends State<forum> {
   final _formKey = GlobalKey<FormState>();
-
-  // List<> _job = List<Job>();
   List<PostForum> _listForum = <PostForum>[];
 
   Future<List<PostForum>> getPostForum() async {
     var url = 'https://caseworqer.herokuapp.com/forum/json-forum';
     var response = await http.get(url);
     print(response);
-    // ignore: deprecated_member_use
+
     var listForum = <PostForum>[];
     if (response.statusCode == 200) {
       print("200");
@@ -60,7 +43,6 @@ class _forum extends State<forum> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -179,7 +161,6 @@ class _forum extends State<forum> {
         backgroundColor: Color(0xFF689775),
         foregroundColor: white,
         onPressed: () {
-          // Navigator.pushNamed(context, add_forum.addRoute);
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
             return add_forum(0);
           }));
@@ -265,7 +246,6 @@ class AddForumPage extends State<add_forum> {
   var now = DateTime.now();
 
   void clearAddForum() {
-    title_controller.clear();
     message_controller.clear();
   }
 
@@ -358,6 +338,9 @@ class AddForumPage extends State<add_forum> {
                               if (_formKey.currentState!.validate()) {
                                 id_forum = widget.id;
                                 print("Forum tervalidasi");
+                                print("----------------");
+                                print("forum dengan id : ");
+                                print(id_forum);
                                 print("Title Forum : ");
                                 print(titleForum);
                                 print("Message Forum : ");
@@ -371,12 +354,6 @@ class AddForumPage extends State<add_forum> {
                                       '${now.year}-${now.month}-${now.day}T${now.hour}:${now.minute}:${now.second}.${now.millisecondsSinceEpoch}Z',
                                   'userPost': "Unknown",
                                 }));
-
-                                // Map<String, dynamic> toJson() => {
-                                //       'title': titleForum,
-                                //       'message': Message,
-                                //     };
-                                // print(jsonEncode(toJson));
 
                                 final response = await http.post(
                                   Uri.parse(
