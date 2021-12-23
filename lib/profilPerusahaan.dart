@@ -10,7 +10,6 @@ class profilPerusahaan extends StatefulWidget {
 }
 
 class _profilPerusahaan extends State<profilPerusahaan> {
-  int id = 0; // untuk refresh state
   List<IsiProfilPerusahaan> attrIsiProfilPerusahaan = List<IsiProfilPerusahaan>();
   List<IsiPelamar> attrPelamar = List<IsiPelamar>();
   List<IsiLowonganKerja> attrLowonganKerja = List<IsiLowonganKerja>();
