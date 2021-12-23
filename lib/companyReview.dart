@@ -116,7 +116,7 @@ class _companyReview extends State<companyReview> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ReviewPost(_review[index].pekerjaan)),
+                  builder: (context) => ReviewPost(_job[index].pk)),
             );
           },
         );
@@ -160,13 +160,39 @@ class Review {
 
 class ReviewPost extends StatefulWidget {
   int id;
+  int index = 0;
+  List<Jobs> _job = <Jobs>[];
+  List<Review> _review = <Review>[];
 
   ReviewPost(this.id);
   @override
-  _ReviewPostState createState() => _ReviewPostState();
+  _ReviewPostState createState() => _ReviewPostState(index, _job, _review);
 }
 
 class _ReviewPostState extends State<ReviewPost>  {
+  int index_job;
+
+  _ReviewPostState(this.index_job, this._job, this._review);
+
+  List<Jobs> _job = <Jobs>[];
+
+  Future<List<Jobs>> fetchNotes() async {
+    var url = 'http://caseworqer.herokuapp.com/company_review/json-joblist';
+    var response = await http.get(url);
+    print(response);
+    // ignore: deprecated_member_use
+    var job = <Jobs>[];
+    if (response.statusCode == 200) {
+      print("200");
+      var jobsJson = json.decode(response.body);
+      print(jobsJson);
+      for (var jobJson in jobsJson) {
+        print(Jobs.fromJson(jobJson));
+        job.add(Jobs.fromJson(jobJson));
+      }
+    }
+    return job;
+  }
 
   List<Review> _review = <Review>[];
 
@@ -190,6 +216,11 @@ class _ReviewPostState extends State<ReviewPost>  {
 
   @override
   void initState() {
+    fetchNotes().then((value) {
+      setState(() {
+        _job.addAll(value);
+      });
+    });
     getListPost().then((value) {
       setState(() {
         _review.addAll(value);
@@ -210,13 +241,15 @@ class _ReviewPostState extends State<ReviewPost>  {
       ),
     body: Container (
       child: ListView.builder(
-        reverse: true,
+        reverse: false,
         itemCount: _review.length,
         itemBuilder: (context, index) {
-          return ListBody(children: <Widget> [
+          if (_job[index_job].pk == _review[index].fields['pekerjaan']) {
+          return ListBody(children: <Widget>[
             Card(
+              
               child: Padding(
-                    padding: EdgeInsets.all(18),
+                    padding: EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -251,12 +284,13 @@ class _ReviewPostState extends State<ReviewPost>  {
                 color:Color.fromRGBO(0, 0, 0, 50),
               ),
             ),
-            const SizedBox(height: 8),
                   ],
                 ),
               ),
-            ),
-          ]);
+          )]);
+          } else {
+            return const SizedBox(height: 0);
+          }
         }),
       ),
     );
