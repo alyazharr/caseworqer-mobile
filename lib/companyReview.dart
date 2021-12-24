@@ -83,6 +83,13 @@ class _companyReview extends State<companyReview> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                  Row(children: <Widget>[
+                    Image(
+                      image: AssetImage(
+                          'assets/images/avatar7.png'),
+                      width: 35,
+                      height: 35,
+                    ),        
                 Text(
                   _job[index].fields["jobs"],
                   style: TextStyle(
@@ -91,6 +98,7 @@ class _companyReview extends State<companyReview> {
                     color: Color.fromRGBO(205,73,57,50)
                   ),
                 ),
+                ]),
                 Text(
                   _job[index].fields["company"],
                   style: TextStyle(
@@ -166,13 +174,16 @@ class ReviewPost extends StatefulWidget {
 
   ReviewPost(this.id);
   @override
-  _ReviewPostState createState() => _ReviewPostState(index, _job, _review);
+  _ReviewPostState createState() {
+      print(id);
+    return _ReviewPostState(id);
+  }
 }
 
 class _ReviewPostState extends State<ReviewPost>  {
   int index_job;
 
-  _ReviewPostState(this.index_job, this._job, this._review);
+  _ReviewPostState(this.index_job);
 
   List<Jobs> _job = <Jobs>[];
 
@@ -244,10 +255,9 @@ class _ReviewPostState extends State<ReviewPost>  {
         reverse: false,
         itemCount: _review.length,
         itemBuilder: (context, index) {
-          if (_job[index_job].pk == _review[index].fields['pekerjaan']) {
+          if (_job[index_job-1].pk  == _review[index].fields['pekerjaan']) {
           return ListBody(children: <Widget>[
             Card(
-              
               child: Padding(
                     padding: EdgeInsets.all(12),
                     child: Column(
@@ -258,7 +268,7 @@ class _ReviewPostState extends State<ReviewPost>  {
                   Column(children: <Widget>[
                     Image(
                       image: AssetImage(
-                          'assets/images/profil_forum.jpg'),
+                          'assets/images/avatar7.png'),
                       width: 35,
                       height: 35,
                     ),
@@ -266,7 +276,7 @@ class _ReviewPostState extends State<ReviewPost>  {
                   Text('    '),
                   Flexible(
                     child: Text(
-                _review[index].fields["postTime"],
+                _review[index].fields["penulis"].join(),
                 style: TextStyle(
                 fontSize: 15,
                 color: Color.fromRGBO(0, 0, 0, 50),
