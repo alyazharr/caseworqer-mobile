@@ -1,6 +1,10 @@
 # CASEWORQER
 ## PBP-D01
 
+[![Pipeline](https://gitlab.com/christopher.ekaputra/pbp-proyek-akhir-semester/badges/master/pipeline.svg)](https://gitlab.com/christopher.ekaputra/pbp-proyek-akhir-semester/pipelines)
+[![Coverage](https://gitlab.com/christopher.ekaputra/pbp-proyek-akhir-semester/badges/master/coverage.svg)](https://gitlab.com/christopher.ekaputra/pbp-proyek-akhir-semester/pipelines)
+
+
 ### Nama Anggota :
 - Gibran Rasyadan Jayandaru - 2006464070
 - Muhammad Farrel Sava Archini - 2006483025
