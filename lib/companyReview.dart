@@ -11,6 +11,65 @@ class companyReview extends StatefulWidget {
 
 class _companyReview extends State<companyReview> {
   List<Jobs> _job = <Jobs>[];
+  String query = '';
+  Timer? debouncer;
+
+  @override
+  void initState() {
+    fetchNotes().then((value) {
+      setState(() {
+        _job.addAll(value);
+      });
+    });
+    getListPost().then((value) {
+      setState(() {
+        _review.addAll(value);
+      });
+    });
+    super.initState();
+
+    init();
+  }
+
+  @override
+  void dispose() {
+    debouncer?.cancel();
+    super.dispose();
+  }
+
+  void debounce(
+    VoidCallback callback, {
+    Duration duration = const Duration(milliseconds: 100),
+  }) {
+    if (debouncer != null) {
+      debouncer!.cancel();
+    }
+
+    debouncer = Timer(duration, callback);
+  }
+
+  Future init() async {
+    final jobs = await searchJob.getJobs(query);
+
+    setState(() => this._job = jobs);
+  }
+
+  Widget buildSearch() => SearchWidget(
+        text: query,
+        hintText: 'Cari pekerjaan',
+        onChanged: searchBerita,
+      );
+
+  Future searchBerita(String query) async => debounce(() async {
+        final books = await searchJob.getJobs(query);
+
+        if (!mounted) return;
+
+        setState(() {
+          this.query = query;
+          this._job = books;
+        });
+      });
 
   Future<List<Jobs>> fetchNotes() async {
     var url = 'http://caseworqer.herokuapp.com/company_review/json-joblist';
@@ -51,21 +110,6 @@ class _companyReview extends State<companyReview> {
   }
 
   @override
-  void initState() {
-    fetchNotes().then((value) {
-      setState(() {
-        _job.addAll(value);
-      });
-    });
-    getListPost().then((value) {
-      setState(() {
-        _review.addAll(value);
-      });
-    });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -75,7 +119,12 @@ class _companyReview extends State<companyReview> {
             style: TextStyle(fontFamily: 'Sansita One')),
         centerTitle: true,
       ),
-        body: ListView.builder(
+        body: 
+        Column(
+          children: <Widget>[
+            buildSearch(),
+            Expanded(
+        child: ListView.builder(
       itemBuilder: (context, index) {
         return InkWell(
           child: Padding(
@@ -84,6 +133,7 @@ class _companyReview extends State<companyReview> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                
                   Row(children: <Widget>[
                     Padding(padding:EdgeInsets.only(bottom:5.0, right:5.0), child:
                       Image(
@@ -133,7 +183,13 @@ class _companyReview extends State<companyReview> {
         );
       },
       itemCount: _job.length,
-    ));
+    )
+            )
+  ]
+)
+    );
+
+    
   }
 }
 
@@ -301,7 +357,7 @@ class _ReviewPostState extends State<ReviewPost>  {
                     ),
                   ]),
                   Text('    '),
-                  Flexible(
+                  Flexible( 
                     child: Text(
                 _review[index].fields["penulis"].join(),
                 style: TextStyle(
@@ -311,8 +367,13 @@ class _ReviewPostState extends State<ReviewPost>  {
                   ),
                 ),
               ),
-              RatingBarIndicator (
-                  rating: _review[index].fields["value"],
+            ],
+          ),
+          Column(children: [
+            Row(
+                children: <Widget>[
+                  RatingBarIndicator (
+                  rating: _review[index].fields["value"].toDouble(),
                     itemBuilder: (context, index) => Icon(
                         Icons.star,
                         color: Colors.amber,
@@ -323,6 +384,7 @@ class _ReviewPostState extends State<ReviewPost>  {
                 ),
             ],
           ),
+          ]),
           const SizedBox(height: 5),
           Text(
             _review[index].fields["description"],
@@ -421,6 +483,15 @@ class _addReviewFormState extends State<addReviewForm> {
                       border: OutlineInputBorder(
                           borderRadius: new BorderRadius.circular(5.0)),
                     ),
+                    validator: (value) {
+                      print(value);
+                      if (value==null || value.isEmpty) {
+                        return 'Give your feedback...';
+                      } else {
+                        desc = value;
+                      }
+                      return null;
+                    },
                     maxLines: 5,
                   ),
                 ),
@@ -431,6 +502,11 @@ class _addReviewFormState extends State<addReviewForm> {
                   height: 40,
                   child: RaisedButton(
                     onPressed: () async {
+                    id_job = widget.id_review;
+                      final response = await http.post(
+                        Uri.parse(
+                          'https://caseworqer.herokuapp.com/company_review/job/' + id_job.toString()));
+                      print(response.statusCode);
                     if (_formKey.currentState!.validate()) {
                       id_job = widget.id_review;
                       final response = await http.post(
@@ -441,12 +517,15 @@ class _addReviewFormState extends State<addReviewForm> {
                                 'application/json; charset=UTF-8',
                       },
                       body: jsonEncode(<String, dynamic>{
+                          "model": "company_review.perusahaankomen",
+                            "fields": {
                           'pekerjaan': id_job,
                           'penulis':['penulis'],
                           'value':valueRate,
                           'desc': desc,
                           'postTime':
                               '${now.year}-${now.month}-${now.day}T${now.hour}:${now.minute}:${now.second}.${now.millisecondsSinceEpoch}Z',
+                          }
                         }),
                       );
                   if (response.statusCode == 201 ||
@@ -1212,3 +1291,86 @@ class CancelButton extends StatelessWidget {
     );
   }
 }
+
+// Search Bar Widget
+class searchJob {
+  static Future<List<Jobs>> getJobs(String query) async {
+    final url = Uri.parse('http://caseworqer.herokuapp.com/company_review/json-joblist');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List jobs = json.decode(response.body);
+
+      return jobs.map((json) => Jobs.fromJson(json)).where((_job) {
+        final titleLower = _job.fields["jobs"].toLowerCase();
+        final summaryLower = _job.fields["company"].toLowerCase();
+        final searchLower = query.toLowerCase();
+
+        return titleLower.contains(searchLower) ||
+            summaryLower.contains(searchLower);
+      }).toList();
+    } else {
+      throw Exception();
+    }
+  }
+}
+class SearchWidget extends StatefulWidget {
+  final String text;
+  final ValueChanged<String> onChanged;
+  final String hintText;
+
+  const SearchWidget({
+    Key? key,
+    required this.text,
+    required this.onChanged,
+    required this.hintText,
+  }) : super(key: key);
+
+  @override
+  _SearchWidgetState createState() => _SearchWidgetState();
+}
+
+class _SearchWidgetState extends State<SearchWidget> {
+  final controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final styleActive = TextStyle(color: Colors.black);
+    final styleHint = TextStyle(color: Colors.black54);
+    final style = widget.text.isEmpty ? styleHint : styleActive;
+
+    return Container(
+      height: 42,
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        border: Border.all(color: Colors.black26),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          icon: Icon(Icons.search, color: style.color),
+          suffixIcon: widget.text.isNotEmpty
+              ? GestureDetector(
+                  child: Icon(Icons.close, color: style.color),
+                  onTap: () {
+                    controller.clear();
+                    widget.onChanged('');
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                )
+              : null,
+          hintText: widget.hintText,
+          hintStyle: style,
+          border: InputBorder.none,
+        ),
+        style: style,
+        onChanged: widget.onChanged,
+      ),
+    );
+  }
+}
+
+
