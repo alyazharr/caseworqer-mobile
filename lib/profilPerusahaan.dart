@@ -312,6 +312,30 @@ class DetailPelamar extends StatelessWidget {
             color: Colors.white,
             child: Column(
               children: <Widget> [
+                Center(
+
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 2),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(22),
+                      child: Image.network(
+                          attrPelamar[index].fields["jenisKelamin"] == "Pria"
+                              ? 'https://www.w3schools.com/howto/img_avatar.png'
+                              : 'https://www.w3schools.com/howto/img_avatar2.png',
+                        height: 240,
+                        width: 240,
+                      fit: BoxFit.cover,
+                      ),
+                    )
+
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Text(
                   attrPelamar[index].fields["nama"],
                   textAlign: TextAlign.center,
