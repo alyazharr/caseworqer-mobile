@@ -1,5 +1,10 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:async';
 import 'dart:convert';
+
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:http/http.dart' as http;
@@ -842,23 +847,14 @@ class ArtikelForm extends StatefulWidget {
 
 class _ArtikelFormState extends State<ArtikelForm> {
   final _formKey = GlobalKey<FormState>();
-  // late int articlepk = 3;
+  
 
   late String title1;
   late int highlight1;
   late String article1;
   late String summary1;
-
-  // String title1;
-  //late String cover1;
-  // String model = "tipskarier.tipskarier";
-  // String jenisKelaminForm;
-  // int idLowongan;
-
-  // double nilaiSlider = 1;
-  // bool nilaiCheckBox = false;
-  // bool nilaiSwitch = true;
-  // jenisKelamin _character;
+  late String cover1;
+ 
   static const TextStyle judulStyle =
       TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
   @override
@@ -878,10 +874,10 @@ class _ArtikelFormState extends State<ArtikelForm> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    autofocus: true,
                     decoration: new InputDecoration(
-                      // hintText: "contoh: Susilo Bambang",
+                     
                       labelText: "Judul Artikel",
-                      // icon: Icon(Icons.people),
                       border: OutlineInputBorder(
                           borderRadius: new BorderRadius.circular(5.0)),
                     ),
@@ -920,7 +916,7 @@ class _ArtikelFormState extends State<ArtikelForm> {
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     maxLines: 2,
-                    autofocus: true,
+                    
                     decoration: new InputDecoration(
                       labelText: "Ringkasan",
                       // icon: Icon(Icons.school),
@@ -942,17 +938,17 @@ class _ArtikelFormState extends State<ArtikelForm> {
                 //   padding: const EdgeInsets.all(8.0),
                 //   child: TextFormField(
                 //     decoration: new InputDecoration(
-                //       labelText: "Alamat",
-                //       icon: Icon(Icons.home),
+                //       labelText: "URL Gambar (boleh Kosong)",
+                    
                 //       border: OutlineInputBorder(
                 //           borderRadius: new BorderRadius.circular(5.0)),
                 //     ),
                 //     validator: (value) {
                 //       print(value);
-                //       if (value!.isEmpty) {
-                //         return 'Alamat tidak boleh kosong';
+                //       if (value == null) {
+                //         cover1 = null;
                 //       } else {
-                //         cover1 = value;
+                //         cover1 = value!;
                 //       }
                 //       return null;
                 //     },
@@ -1002,16 +998,7 @@ class _ArtikelFormState extends State<ArtikelForm> {
                       //print(articlepk);
                       print("end");
 
-                      // Map<String, dynamic> toJson() => {
-                      //       'nama': nama,
-                      //       'usia': usia,
-                      //       'pendidikan': pendidikan,
-                      //       'alamat': alamat,
-                      //       'email': email,
-                      //       'jenisKelamin': jenisKelaminForm,
-                      //       'sertifikatVaksin': sertifikatVaksin,
-                      //       'idLowongan': idLowongan
-                      //     };
+               
                       print(jsonEncode(<String, dynamic>{
                         'Title': title1,
                         'Summary': summary1,
@@ -1025,11 +1012,11 @@ class _ArtikelFormState extends State<ArtikelForm> {
                           'Content-Type': 'application/json; charset=UTF-8',
                         },
                         body: jsonEncode(<String, dynamic>{
-                          'Title': title1,
-                          'Article': article1,
-                          'Cover': null,
-                          'Summary': "<p>$summary1</p>",
-                          'Highlight': highlight1
+                          "Title": title1,
+                          "Article": '<p>$article1</p>',
+                          "Cover": null,
+                          "Summary": summary1,
+                          "Highlight": highlight1
                         }),
                          
                       );
@@ -1058,4 +1045,3 @@ class _ArtikelFormState extends State<ArtikelForm> {
     );
   }
 }
-
