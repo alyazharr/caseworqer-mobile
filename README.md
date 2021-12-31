@@ -98,9 +98,9 @@ Data dari form akan dibuat dalam bentuk json, data json ini akan digunakan sebag
 Forum merupakan sebuah halaman pagi para pengguna untuk saling berinteraksi dan berbagi pengalaman di dunia kerja. Pengguna bisa memposting forum baru dan memberikan reply atau balasan pada suatu forum.   
   
 Hal yang perlu diimplementasikan :
-- Form untuk memulai postingan baru (berisi judul dan isi form)
-- Form untuk fitur reply tiap postingan
-- Toggle button dan alert  
+- Page Add Forum, sebuah form page untuk memulai postingan baru (berisi judul, isi forum, dan username)  
+- Comment Page, sebuah page untuk melihat daftar list comment forum yang bersangkutan  
+- Add Comment Page, sebuah form page untuk memulai postingan comment dari sebuah forum  
   
 Data postingan pengguna dan reply pada tiap objek postingan akan diambil dari website dengan framework django yang telah dibuat sebelumnya dalam bentuk json. Data json sebagai media pengiriman data dari django ke flutter dan sebaliknya.
 
