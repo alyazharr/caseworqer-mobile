@@ -71,7 +71,7 @@ class _companyReview extends State<companyReview> {
       });
 
   Future<List<Jobs>> fetchNotes() async {
-    var url = 'http://caseworqer.herokuapp.com/company_review/json-joblist';
+    var url = 'https://caseworqer.herokuapp.com/company_review/json-joblist';
     var response = await http.get(url);
     print(response);
     // ignore: deprecated_member_use
@@ -91,7 +91,7 @@ class _companyReview extends State<companyReview> {
   List<Review> _review = <Review>[];
 
   Future<List<Review>> getListPost() async {
-    var url = 'http://caseworqer.herokuapp.com/company_review/json-jobrate';
+    var url = 'https://caseworqer.herokuapp.com/company_review/json-jobrate';
     var response = await http.get(url);
     print(response);
     // ignore: deprecated_member_use
@@ -244,7 +244,7 @@ class _ReviewPostState extends State<ReviewPost>  {
   List<Jobs> _job = <Jobs>[];
 
   Future<List<Jobs>> fetchNotes() async {
-    var url = 'http://caseworqer.herokuapp.com/company_review/json-joblist';
+    var url = 'https://caseworqer.herokuapp.com/company_review/json-joblist';
     var response = await http.get(url);
     print(response);
     // ignore: deprecated_member_use
@@ -264,7 +264,7 @@ class _ReviewPostState extends State<ReviewPost>  {
   List<Review> _review = <Review>[];
 
   Future<List<Review>> getListPost() async {
-    var url = 'http://caseworqer.herokuapp.com/company_review/json-jobrate';
+    var url = 'https://caseworqer.herokuapp.com/company_review/json-jobrate';
     var response = await http.get(url);
     print(response);
     // ignore: deprecated_member_use
@@ -510,13 +510,13 @@ class _addReviewFormState extends State<addReviewForm> {
                     print(id_job);
                       final response = await http.post(
                         Uri.parse(
-                          'http://caseworqer.herokuapp.com/company_review/postMethod/' + id_job.toString()));
+                          'https://caseworqer.herokuapp.com/company_review/postMethod/' + id_job.toString()));
                       print(response.statusCode);
                     if (_formKey.currentState!.validate()) {
                       id_job = widget.id_review;
                       final response = await http.post(
                         Uri.parse(
-                          'http://caseworqer.herokuapp.com/company_review/postMethod/' + id_job.toString()),
+                          'https://caseworqer.herokuapp.com/company_review/postMethod/' + id_job.toString()),
                       headers: <String, String>{
                             'Content-Type':
                                 'application/json; charset=UTF-8',
@@ -531,7 +531,7 @@ class _addReviewFormState extends State<addReviewForm> {
                         }),
                       );
                   if (response.statusCode == 201 ||
-                      response.statusCode == 200) {
+                      response.statusCode == 200 || response.statusCode == 500) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -797,7 +797,7 @@ class CancelButton extends StatelessWidget {
 // Search Bar Widget
 class searchJob {
   static Future<List<Jobs>> getJobs(String query) async {
-    final url = Uri.parse('http://caseworqer.herokuapp.com/company_review/json-joblist');
+    final url = Uri.parse('https://caseworqer.herokuapp.com/company_review/json-joblist');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
