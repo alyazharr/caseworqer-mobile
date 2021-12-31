@@ -227,8 +227,6 @@ class Review {
 class ReviewPost extends StatefulWidget {
   int id;
   int index = 0;
-  List<Jobs> _job = <Jobs>[];
-  List<Review> _review = <Review>[];
 
   ReviewPost(this.id);
   @override
@@ -407,7 +405,7 @@ class _ReviewPostState extends State<ReviewPost>  {
         foregroundColor: Color(0xFFFFFFFF),
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return addReviewForm(_review[index_job].pk);
+            return addReviewForm(id_review: _job[index_job-1].pk, index: index_job);
           }));
         },
       ),
@@ -416,8 +414,10 @@ class _ReviewPostState extends State<ReviewPost>  {
 }
 
 class addReviewForm extends StatefulWidget {
-  int id_review;
-  addReviewForm(this.id_review);
+  final int id_review;
+  final int index;
+  addReviewForm({Key? key, required this.id_review, required this.index})
+       : super(key: key);
 
   @override
   _addReviewFormState createState() {
@@ -425,6 +425,16 @@ class addReviewForm extends StatefulWidget {
   return _addReviewFormState();
   } 
 }
+
+// class Comment extends StatefulWidget {
+//   final int pk;
+//   final int index;
+//   const Comment({Key? key, required this.pk, required this.index})
+//       : super(key: key);
+
+//   @override
+//   _CommentState createState() => _CommentState();
+// }
 
 class _addReviewFormState extends State<addReviewForm> {
   TextEditingController message_controller = new TextEditingController();
@@ -496,26 +506,26 @@ class _addReviewFormState extends State<addReviewForm> {
                   height: 40,
                   child: RaisedButton(
                     onPressed: () async {
-                    id_job = 1;
+                    id_job = widget.id_review;
                     print(id_job);
                       final response = await http.post(
                         Uri.parse(
-                          'http://caseworqer.herokuapp.com/company_review/job/' + id_job.toString()));
+                          'http://caseworqer.herokuapp.com/company_review/postMethod/' + id_job.toString()));
                       print(response.statusCode);
                     if (_formKey.currentState!.validate()) {
-                      id_job = 1;
+                      id_job = widget.id_review;
                       final response = await http.post(
                         Uri.parse(
-                          'http://caseworqer.herokuapp.com/company_review/job/' + id_job.toString()),
+                          'http://caseworqer.herokuapp.com/company_review/postMethod/' + id_job.toString()),
                       headers: <String, String>{
                             'Content-Type':
                                 'application/json; charset=UTF-8',
                       },
                       body: jsonEncode(<String, dynamic>{
                           'pekerjaan': id_job,
-                          'penulis':['penulis'],
+                          'penulis':['D01'],
                           'value':_ratings,
-                          'desc': desc,
+                          'description': desc,
                           'postTime':
                               '${now.year}-${now.month}-${now.day}T${now.hour}:${now.minute}:${now.second}.${now.millisecondsSinceEpoch}Z',
                         }),
